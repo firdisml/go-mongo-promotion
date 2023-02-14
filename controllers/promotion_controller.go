@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var promotion_collection *mongo.Collection = configs.GetCollection(configs.Database, "promotions")
@@ -88,6 +89,34 @@ func CreatePromotion(c *fiber.Ctx) error {
 		Message: "Success",
 		Data:    &fiber.Map{"mongo_data": insert_result, "image_data": file_upload_result, "promotion_id": promotion_id}})
 
+}
+
+func GetPromotions(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	promotions := []models.Promotion{}
+	defer cancel()
+	findOptions := options.Find()
+	findOptions.SetLimit(5)
+
+	find_cursor, find_error := promotion_collection.Find(ctx, bson.D{}, findOptions)
+	if find_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": find_error.Error()}})
+	}
+
+	if cursor_error := find_cursor.All(context.TODO(), &promotions); cursor_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": cursor_error.Error()}})
+	}
+
+	return c.Status(http.StatusOK).JSON(responses.PromotionResponse{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    &fiber.Map{"data": promotions}})
 }
 
 func GetUniquePromotion(c *fiber.Ctx) error {

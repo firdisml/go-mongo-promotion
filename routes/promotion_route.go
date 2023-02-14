@@ -7,10 +7,11 @@ import (
 
 func PromotionRoutes(app *fiber.App) {
 	//Group
-	promotion := app.Group("/api/promotion")
+	promotion := app.Group("/api/promotions")
 
 	//Routes
 	promotion.Post("/", controllers.CreatePromotion)
+	promotion.Get("/", controllers.GetPromotions)
 	promotion.Get("/:id", controllers.GetUniquePromotion)
 	promotion.Put("/:id", controllers.EditUniquePromotion)
 	promotion.Delete("/:id", controllers.DeleteUniquePromotion)
