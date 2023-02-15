@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/firdisml/go-mongo-rest/configs"
@@ -94,11 +95,31 @@ func CreatePromotion(c *fiber.Ctx) error {
 func GetPromotions(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	promotions := []models.Promotion{}
+	promotion_skip_string := c.Query("skip")
+	promotion_limit_string := c.Query("limit")
 	defer cancel()
-	findOptions := options.Find()
-	findOptions.SetLimit(5)
 
-	find_cursor, find_error := promotion_collection.Find(ctx, bson.D{}, findOptions)
+	promotion_skip_int64, promotion_skip_convert_error := strconv.ParseInt(promotion_skip_string, 10, 64)
+	if promotion_skip_convert_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": promotion_skip_convert_error.Error()}})
+	}
+
+	promotion_limit_int64, promotion_limit_convert_error := strconv.ParseInt(promotion_limit_string, 10, 64)
+	if promotion_limit_convert_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": promotion_limit_convert_error.Error()}})
+	}
+
+	find_options := options.Find()
+	find_options.SetSkip(promotion_skip_int64)
+	find_options.SetLimit(promotion_limit_int64)
+
+	find_cursor, find_error := promotion_collection.Find(ctx, bson.D{}, find_options)
 	if find_error != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
 			Status:  http.StatusInternalServerError,
