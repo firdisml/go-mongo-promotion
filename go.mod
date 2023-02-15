@@ -6,7 +6,6 @@ require (
 	github.com/aws/aws-sdk-go v1.44.200
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/gofiber/fiber/v2 v2.42.0
-	github.com/joho/godotenv v1.5.1
 	go.mongodb.org/mongo-driver v1.11.2
 )
 

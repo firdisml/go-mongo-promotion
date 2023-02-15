@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/firdisml/go-mongo-rest/configs"
 	"github.com/firdisml/go-mongo-rest/routes"
@@ -30,7 +31,7 @@ func main() {
 	routes.PromotionRoutes(app)
 
 	//Get Port
-	port := configs.Env("PORT")
+	port := os.Getenv("PORT")
 
 	//Set Port
 	if port == "" {
