@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -33,6 +34,17 @@ func ConnectMongo() *mongo.Client {
 	}
 
 	log.Println("Connected to MongoDB")
+
+	coll := GetCollection(client, "promotions")
+
+	model := mongo.IndexModel{Keys: bson.M{"shop": "text"}}
+
+	name, err := coll.Indexes().CreateOne(ctx, model)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("MongoDB Indexed : ", name)
 
 	return client
 }

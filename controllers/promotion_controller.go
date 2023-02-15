@@ -59,6 +59,8 @@ func CreatePromotion(c *fiber.Ctx) error {
 
 	promotion_id := primitive.NewObjectID()
 
+	promotion_created_date := primitive.NewDateTimeFromTime(time.Now())
+
 	file_size := file_header.Size
 
 	file_buffer := make([]byte, file_size)
@@ -75,6 +77,10 @@ func CreatePromotion(c *fiber.Ctx) error {
 		Shop:        promotion.Shop,
 		State:       promotion.State,
 		Link:        promotion.Link,
+		Created:     promotion_created_date,
+		Start:       promotion.Start,
+		End:         promotion.End,
+		Visible:     promotion.Visible,
 	}
 
 	insert_result, insert_error := promotion_collection.InsertOne(ctx, new_promotion)
@@ -97,6 +103,7 @@ func GetPromotions(c *fiber.Ctx) error {
 	promotions := []models.Promotion{}
 	promotion_skip_string := c.Query("skip")
 	promotion_limit_string := c.Query("limit")
+	promotion_search := c.Query("search")
 	defer cancel()
 
 	promotion_skip_int64, promotion_skip_convert_error := strconv.ParseInt(promotion_skip_string, 10, 64)
@@ -119,7 +126,9 @@ func GetPromotions(c *fiber.Ctx) error {
 	find_options.SetSkip(promotion_skip_int64)
 	find_options.SetLimit(promotion_limit_int64)
 
-	find_cursor, find_error := promotion_collection.Find(ctx, bson.D{}, find_options)
+	filter := bson.M{"$text": bson.M{"$search": promotion_search}}
+
+	find_cursor, find_error := promotion_collection.Find(ctx, filter, find_options)
 	if find_error != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
 			Status:  http.StatusInternalServerError,
