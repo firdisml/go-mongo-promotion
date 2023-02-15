@@ -212,6 +212,10 @@ func EditUniquePromotion(c *fiber.Ctx) error {
 		"shop":        promotion.Shop,
 		"state":       promotion.State,
 		"link":        promotion.Link,
+		"created":     promotion.Created,
+		"start":       promotion.Start,
+		"end":         promotion.End,
+		"visible":     promotion.Visible,
 	}
 
 	update_result, update_error := promotion_collection.UpdateOne(ctx, bson.M{"id": promotion_object_id}, bson.M{"$set": update_promotion})
