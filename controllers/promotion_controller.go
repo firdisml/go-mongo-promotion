@@ -126,7 +126,12 @@ func GetPromotionsSearch(c *fiber.Ctx) error {
 	find_options.SetSkip(promotion_skip_int64)
 	find_options.SetLimit(promotion_limit_int64)
 
-	filter := bson.M{"$text": bson.M{"$search": promotion_search}}
+	regex := `.*`
+
+	filter := bson.M{
+		"$text": bson.M{"$search": promotion_search},
+		"shop":  bson.M{"$regex": regex},
+	}
 
 	find_cursor, find_error := promotion_collection.Find(ctx, filter, find_options)
 	if find_error != nil {
