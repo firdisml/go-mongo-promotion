@@ -125,7 +125,6 @@ func GetPromotions(c *fiber.Ctx) error {
 	find_options := options.Find()
 	find_options.SetSkip(promotion_skip_int64)
 	find_options.SetLimit(promotion_limit_int64)
-	find_options.SetSort(bson.M{"created": 0})
 
 	var filter = bson.M{}
 
