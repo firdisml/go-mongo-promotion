@@ -3,7 +3,6 @@ package configs
 import (
 	"context"
 	"log"
-	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,7 +13,7 @@ import (
 var Database *mongo.Client = ConnectMongo()
 
 func ConnectMongo() *mongo.Client {
-	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
+	client, err := mongo.NewClient(options.Client().ApplyURI(Env("MONGO_URI")))
 	if err != nil {
 		log.Fatal(err)
 	}

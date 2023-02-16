@@ -98,7 +98,7 @@ func CreatePromotion(c *fiber.Ctx) error {
 
 }
 
-func GetPromotionsSearch(c *fiber.Ctx) error {
+func GetPromotions(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	promotions := []models.Promotion{}
 	promotion_skip_string := c.Query("skip")
@@ -126,62 +126,11 @@ func GetPromotionsSearch(c *fiber.Ctx) error {
 	find_options.SetSkip(promotion_skip_int64)
 	find_options.SetLimit(promotion_limit_int64)
 
-	regex := `.*`
+	var filter = bson.M{}
 
-	filter := bson.M{
-		"$text": bson.M{"$search": promotion_search},
-		"shop":  bson.M{"$regex": regex},
+	if promotion_search != "" {
+		filter = bson.M{"$text": bson.M{"$search": promotion_search}}
 	}
-
-	find_cursor, find_error := promotion_collection.Find(ctx, filter, find_options)
-	if find_error != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
-			Status:  http.StatusInternalServerError,
-			Message: "Error",
-			Data:    &fiber.Map{"data": find_error.Error()}})
-	}
-
-	if cursor_error := find_cursor.All(context.TODO(), &promotions); cursor_error != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
-			Status:  http.StatusInternalServerError,
-			Message: "Error",
-			Data:    &fiber.Map{"data": cursor_error.Error()}})
-	}
-
-	return c.Status(http.StatusOK).JSON(responses.PromotionResponse{
-		Status:  http.StatusOK,
-		Message: "Success",
-		Data:    &fiber.Map{"data": promotions}})
-}
-
-func GetPromotionsAll(c *fiber.Ctx) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	promotions := []models.Promotion{}
-	promotion_skip_string := c.Query("skip")
-	promotion_limit_string := c.Query("limit")
-	defer cancel()
-
-	promotion_skip_int64, promotion_skip_convert_error := strconv.ParseInt(promotion_skip_string, 10, 64)
-	if promotion_skip_convert_error != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
-			Status:  http.StatusInternalServerError,
-			Message: "Error",
-			Data:    &fiber.Map{"data": promotion_skip_convert_error.Error()}})
-	}
-
-	promotion_limit_int64, promotion_limit_convert_error := strconv.ParseInt(promotion_limit_string, 10, 64)
-	if promotion_limit_convert_error != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
-			Status:  http.StatusInternalServerError,
-			Message: "Error",
-			Data:    &fiber.Map{"data": promotion_limit_convert_error.Error()}})
-	}
-
-	find_options := options.Find()
-	find_options.SetSkip(promotion_skip_int64)
-	find_options.SetLimit(promotion_limit_int64)
-
-	filter := bson.M{}
 
 	find_cursor, find_error := promotion_collection.Find(ctx, filter, find_options)
 	if find_error != nil {

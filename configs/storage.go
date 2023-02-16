@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -18,13 +17,13 @@ var Storage *session.Session = ConnectStorage()
 func ConnectStorage() *session.Session {
 
 	credential := credentials.NewStaticCredentials(
-		os.Getenv("AWS_S3_ACCESS_ID"),
-		os.Getenv("AWS_S3_SECRET_KEY"),
+		Env("AWS_S3_ACCESS_ID"),
+		Env("AWS_S3_SECRET_KEY"),
 		"",
 	)
 
 	aws_config := aws.Config{
-		Region:      aws.String(os.Getenv("AWS_S3_REGION")),
+		Region:      aws.String(Env("AWS_S3_REGION")),
 		Credentials: credential,
 	}
 
