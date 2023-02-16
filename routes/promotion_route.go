@@ -11,7 +11,8 @@ func PromotionRoutes(app *fiber.App) {
 
 	//Routes
 	promotion.Post("/", controllers.CreatePromotion)
-	promotion.Get("/query", controllers.GetPromotions)
+	promotion.Get("/query", controllers.GetPromotionsSearch)
+	promotion.Get("/", controllers.GetPromotionsAll)
 	promotion.Get("/:id", controllers.GetUniquePromotion)
 	promotion.Put("/:id", controllers.EditUniquePromotion)
 	promotion.Delete("/:id", controllers.DeleteUniquePromotion)
