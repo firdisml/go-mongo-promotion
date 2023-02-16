@@ -15,5 +15,5 @@ type Promotion struct {
 	Created     primitive.DateTime `json:"created"`
 	Start       primitive.DateTime `json:"start"`
 	End         primitive.DateTime `json:"end"`
-	Visible     bool               `json:"visible" validate:"required"`
+	Visible     bool               `json:"visible"`
 }
