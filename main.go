@@ -8,11 +8,14 @@ import (
 	"github.com/firdisml/go-mongo-rest/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	recaptcha "github.com/jansvabik/fiber-recaptcha"
 )
 
 func main() {
 	//Fiber
 	app := fiber.New()
+
+	recaptcha.SecretKey = configs.Env("RECAPTHCA_SECRET")
 
 	//Cors
 	app.Use(cors.New(cors.Config{
