@@ -133,12 +133,20 @@ func GetPromotions(c *fiber.Ctx) error {
 		filter = bson.M{"$text": bson.M{"$search": promotion_search}}
 	}
 
-	find_cursor, find_error := promotion_collection.Find(ctx, filter, find_options)
-	if find_error != nil {
+	find_cursor, find_cursor_error := promotion_collection.Find(ctx, filter, find_options)
+	if find_cursor_error != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
 			Status:  http.StatusInternalServerError,
 			Message: "Error",
-			Data:    &fiber.Map{"data": find_error.Error()}})
+			Data:    &fiber.Map{"data": find_cursor_error.Error()}})
+	}
+
+	find_count, find_count_error := promotion_collection.CountDocuments(ctx, filter)
+	if find_count_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": find_count_error.Error()}})
 	}
 
 	if cursor_error := find_cursor.All(context.TODO(), &promotions); cursor_error != nil {
@@ -151,7 +159,7 @@ func GetPromotions(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(responses.PromotionResponse{
 		Status:  http.StatusOK,
 		Message: "Success",
-		Data:    &fiber.Map{"data": promotions}})
+		Data:    &fiber.Map{"data": promotions, "count": find_count}})
 }
 
 func GetUniquePromotion(c *fiber.Ctx) error {
