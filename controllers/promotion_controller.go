@@ -133,10 +133,10 @@ func GetPromotions(c *fiber.Ctx) error {
 	find_options.SetLimit(promotion_limit_int64)
 	find_options.SetSort(bson.M{"created": -1})
 
-	var filter = bson.M{}
+	var filter = bson.M{"visible": true}
 
 	if promotion_search != "" {
-		filter = bson.M{"$text": bson.M{"$search": promotion_search}}
+		filter = bson.M{"$and": bson.A{bson.M{"$text": bson.M{"$search": promotion_search}}, bson.M{"visible": true}}}
 	}
 
 	find_cursor, find_cursor_error := promotion_collection.Find(ctx, filter, find_options)
