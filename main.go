@@ -14,7 +14,6 @@ import (
 func main() {
 
 	//Recaptcha
-
 	recaptcha.SecretKey = configs.Env("RECAPTCHA_SECRET")
 
 	//Fiber
