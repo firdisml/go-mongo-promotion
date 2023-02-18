@@ -12,10 +12,12 @@ import (
 )
 
 func main() {
+
+	//Recaptcha
+	recaptcha.SecretKey = configs.Env("RECAPTCHA_SECRET")
+
 	//Fiber
 	app := fiber.New()
-
-	recaptcha.SecretKey = configs.Env("RECAPTHCA_SECRET")
 
 	//Cors
 	app.Use(cors.New(cors.Config{
