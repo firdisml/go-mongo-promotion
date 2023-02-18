@@ -77,17 +77,16 @@ func CreatePromotion(c *fiber.Ctx) error {
 	file_upload_result := configs.UploadFile(configs.Storage, file_size, file_buffer, promotion_id)
 
 	new_promotion := models.Promotion{
-		Id:          promotion_id,
-		Title:       promotion.Title,
-		Category:    promotion.Category,
-		Description: promotion.Description,
-		Shop:        promotion.Shop,
-		State:       promotion.State,
-		Link:        promotion.Link,
-		Created:     promotion_created_date,
-		Start:       promotion.Start,
-		End:         promotion.End,
-		Visible:     promotion.Visible,
+		Id:       promotion_id,
+		Title:    promotion.Title,
+		Category: promotion.Category,
+		Shop:     promotion.Shop,
+		State:    promotion.State,
+		Link:     promotion.Link,
+		Created:  promotion_created_date,
+		Start:    promotion.Start,
+		End:      promotion.End,
+		Visible:  promotion.Visible,
 	}
 
 	insert_result, insert_error := promotion_collection.InsertOne(ctx, new_promotion)
@@ -226,16 +225,14 @@ func EditUniquePromotion(c *fiber.Ctx) error {
 	}
 
 	update_promotion := bson.M{
-		"title":       promotion.Title,
-		"category":    promotion.Category,
-		"description": promotion.Description,
-		"shop":        promotion.Shop,
-		"state":       promotion.State,
-		"link":        promotion.Link,
-		"created":     promotion.Created,
-		"start":       promotion.Start,
-		"end":         promotion.End,
-		"visible":     promotion.Visible,
+		"title":    promotion.Title,
+		"category": promotion.Category,
+		"shop":     promotion.Shop,
+		"state":    promotion.State,
+		"link":     promotion.Link,
+		"start":    promotion.Start,
+		"end":      promotion.End,
+		"visible":  promotion.Visible,
 	}
 
 	update_result, update_error := promotion_collection.UpdateOne(ctx, bson.M{"id": promotion_object_id}, bson.M{"$set": update_promotion})
