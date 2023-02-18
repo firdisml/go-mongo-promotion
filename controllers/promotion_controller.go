@@ -21,15 +21,16 @@ var promotion_collection *mongo.Collection = configs.GetCollection(configs.Datab
 var validate = validator.New()
 
 func CreatePromotion(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	var promotion models.Promotion
+	defer cancel()
+
 	if c.Locals("recaptchaSuccess") == false {
 		return c.Status(http.StatusBadRequest).JSON(responses.PromotionResponse{
 			Status:  http.StatusBadRequest,
 			Message: "Error",
-			Data:    &fiber.Map{"error": "captcha verification error"}})
+			Data:    &fiber.Map{"error": "recaptcha verification error"}})
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	var promotion models.Promotion
-	defer cancel()
 
 	file_header, file_header_error := c.FormFile("image")
 	if file_header_error != nil {
