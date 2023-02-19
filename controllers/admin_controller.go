@@ -56,6 +56,7 @@ func SignUpAdmin(c *fiber.Ctx) error {
 		Password: string(hashed_password),
 		Name:     admin.Name,
 		Created:  admin_created_date,
+		Status:   admin.Status,
 	}
 
 	insert_result, insert_error := admin_collection.InsertOne(ctx, new_admin)

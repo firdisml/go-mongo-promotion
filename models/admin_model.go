@@ -12,6 +12,7 @@ type SignUpAdmin struct {
 	Password string             `json:"password,omitempty" validate:"required"`
 	Name     string             `json:"name,omitempty" validate:"required"`
 	Created  time.Time          `json:"created"`
+	Status   *bool              `json:"status" validate:"required"`
 }
 
 type SignInAdmin struct {
