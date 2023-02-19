@@ -34,6 +34,7 @@ func main() {
 
 	//Routes
 	routes.PromotionRoutes(app)
+	routes.AdminRoutes(app)
 
 	//Get Port
 	port := os.Getenv("PORT")
