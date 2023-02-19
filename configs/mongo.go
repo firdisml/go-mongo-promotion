@@ -37,24 +37,32 @@ func ConnectMongo() *mongo.Client {
 
 	coll_promotions := GetCollection(client, "promotions")
 
-	model_promotions := mongo.IndexModel{Keys: bson.M{"shop": "text"}}
-
 	coll_admin := GetCollection(client, "admins")
 
-	model_admins := mongo.IndexModel{Keys: bson.M{"email": -1}, Options: options.Index().SetUnique(true)}
+	model_promotions_shop := mongo.IndexModel{Keys: bson.M{"shop": "text"}}
 
-	index_promotions, index_promotions_error := coll_promotions.Indexes().CreateOne(ctx, model_promotions)
-	if index_promotions_error != nil {
+	model_promotions_visible := mongo.IndexModel{Keys: bson.M{"visible": -1}}
+
+	model_admins_email := mongo.IndexModel{Keys: bson.M{"email": -1}, Options: options.Index().SetUnique(true)}
+
+	index_promotions_shop, index_promotions_shop_error := coll_promotions.Indexes().CreateOne(ctx, model_promotions_shop)
+	if index_promotions_shop_error != nil {
 		log.Fatal(err)
 	}
 
-	index_admins, index_admins_error := coll_admin.Indexes().CreateOne(ctx, model_admins)
-	if index_admins_error != nil {
+	index_promotions_visible, index_promotions_visible_error := coll_promotions.Indexes().CreateOne(ctx, model_promotions_visible)
+	if index_promotions_visible_error != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("MongoDB Indexed : ", index_promotions)
-	log.Println("MongoDB Indexed : ", index_admins)
+	index_admins_email, index_admins_email_error := coll_admin.Indexes().CreateOne(ctx, model_admins_email)
+	if index_admins_email_error != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("MongoDB Indexed : ", index_promotions_shop)
+	log.Println("MongoDB Indexed : ", index_promotions_visible)
+	log.Println("MongoDB Indexed : ", index_admins_email)
 
 	return client
 }
