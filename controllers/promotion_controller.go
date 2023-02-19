@@ -66,7 +66,7 @@ func CreatePromotion(c *fiber.Ctx) error {
 
 	promotion_id := primitive.NewObjectID()
 
-	promotion_created_date := primitive.NewDateTimeFromTime(time.Now())
+	promotion_created_date := time.Now()
 
 	file_size := file_header.Size
 

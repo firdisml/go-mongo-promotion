@@ -6,13 +6,16 @@ require (
 	github.com/aws/aws-sdk-go v1.44.200
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/gofiber/fiber/v2 v2.42.0
+	github.com/gofiber/jwt/v3 v3.3.6
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/jansvabik/fiber-recaptcha v0.1.3
 	github.com/joho/godotenv v1.5.1
 	go.mongodb.org/mongo-driver v1.11.2
+	golang.org/x/crypto v0.6.0
 )
 
 require (
-	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
@@ -37,7 +40,6 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
-	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect

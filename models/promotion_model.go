@@ -13,8 +13,8 @@ type Promotion struct {
 	Shop     string             `json:"shop,omitempty" validate:"required"`
 	State    string             `json:"state,omitempty" validate:"required"`
 	Link     string             `json:"link,omitempty" validate:"required"`
-	Created  primitive.DateTime `json:"created"`
+	Created  time.Time          `json:"created"`
 	Start    time.Time          `json:"start" validate:"required"`
 	End      time.Time          `json:"end" validate:"required"`
-	Visible  bool               `json:"visible"`
+	Visible  *bool              `json:"visible" validate:"required"`
 }

@@ -35,16 +35,26 @@ func ConnectMongo() *mongo.Client {
 
 	log.Println("Connected to MongoDB")
 
-	coll := GetCollection(client, "promotions")
+	coll_promotions := GetCollection(client, "promotions")
 
-	model := mongo.IndexModel{Keys: bson.M{"shop": "text"}}
+	model_promotions := mongo.IndexModel{Keys: bson.M{"shop": "text"}}
 
-	name, err := coll.Indexes().CreateOne(ctx, model)
-	if err != nil {
+	coll_admin := GetCollection(client, "admins")
+
+	model_admins := mongo.IndexModel{Keys: bson.M{"email": -1}, Options: options.Index().SetUnique(true)}
+
+	index_promotions, index_promotions_error := coll_promotions.Indexes().CreateOne(ctx, model_promotions)
+	if index_promotions_error != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("MongoDB Indexed : ", name)
+	index_admins, index_admins_error := coll_admin.Indexes().CreateOne(ctx, model_admins)
+	if index_admins_error != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("MongoDB Indexed : ", index_promotions)
+	log.Println("MongoDB Indexed : ", index_admins)
 
 	return client
 }
