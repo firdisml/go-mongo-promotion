@@ -12,7 +12,6 @@ type SignUpAdmin struct {
 	Password string             `json:"password,omitempty" validate:"required"`
 	Name     string             `json:"name,omitempty" validate:"required"`
 	Created  time.Time          `json:"created"`
-	Updated  time.Time          `json:"updated"`
 	Status   *bool              `json:"status" validate:"required"`
 }
 

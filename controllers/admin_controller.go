@@ -49,7 +49,6 @@ func SignUpAdmin(c *fiber.Ctx) error {
 	admin_id := primitive.NewObjectID()
 
 	admin_created_date := time.Now()
-	admin_updated_date := time.Now()
 
 	new_admin := models.SignUpAdmin{
 		Id:       admin_id,
@@ -57,7 +56,6 @@ func SignUpAdmin(c *fiber.Ctx) error {
 		Password: string(hashed_password),
 		Name:     admin.Name,
 		Created:  admin_created_date,
-		Updated:  admin_updated_date,
 		Status:   admin.Status,
 	}
 
