@@ -10,7 +10,6 @@ import (
 	"github.com/firdisml/go-mongo-rest/models"
 	"github.com/firdisml/go-mongo-rest/responses"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -108,25 +107,10 @@ func SignInAdmin(c *fiber.Ctx) error {
 			Data:    &fiber.Map{"data": password_compare_error.Error()}})
 	}
 
-	token_byte := jwt.New(jwt.SigningMethodHS256)
-
-	token_claims := token_byte.Claims.(jwt.MapClaims)
-
-	token_claims["sub"] = admin_stored.Id.Hex()
-	token_claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-
-	token_string, token_string_error := token_byte.SignedString([]byte(configs.Env("JWT_SECRET")))
-	if token_string_error != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.AdminResponse{
-			Status:  http.StatusInternalServerError,
-			Message: "Error",
-			Data:    &fiber.Map{"data": token_string_error.Error()}})
-	}
-
 	return c.Status(http.StatusCreated).JSON(responses.AdminResponse{
 		Status:  http.StatusOK,
 		Message: "Success",
-		Data:    &fiber.Map{"token": token_string}})
+		Data:    &fiber.Map{"data": admin_stored}})
 }
 
 func GetAdmin(c *fiber.Ctx) error {

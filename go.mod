@@ -7,7 +7,6 @@ require (
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/gofiber/jwt/v3 v3.3.6
-	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/jansvabik/fiber-recaptcha v0.1.3
 	github.com/joho/godotenv v1.5.1
 	go.mongodb.org/mongo-driver v1.11.2
@@ -18,6 +17,7 @@ require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
