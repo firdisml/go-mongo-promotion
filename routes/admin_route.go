@@ -7,9 +7,10 @@ import (
 
 func AdminRoutes(app *fiber.App) {
 	//Group
-	promotion := app.Group("/api/admin")
+	admin := app.Group("/api/admin")
 
 	//Routes
-	promotion.Post("/", controllers.SignUpAdmin)
-	promotion.Post("/login", controllers.SignInAdmin)
+	admin.Post("/", controllers.SignUpAdmin)
+	admin.Post("/login", controllers.SignInAdmin)
+	admin.Get("/get", controllers.GetAdmin)
 }
