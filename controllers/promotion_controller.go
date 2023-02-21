@@ -310,15 +310,13 @@ func EditUniquePromotion(c *fiber.Ctx) error {
 
 		defer file.Close()
 
-		promotion_id := primitive.NewObjectID()
-
 		file_size := file_header.Size
 
 		file_buffer := make([]byte, file_size)
 
 		file.Read(file_buffer)
 
-		file_upload_result = configs.UploadFile(configs.Storage, file_size, file_buffer, promotion_id)
+		file_upload_result = configs.UploadFile(configs.Storage, file_size, file_buffer, promotion_object_id)
 	}
 
 	update_promotion := bson.M{
