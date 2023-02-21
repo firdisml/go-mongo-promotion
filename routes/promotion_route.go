@@ -16,6 +16,6 @@ func PromotionRoutes(app *fiber.App) {
 	promotion.Get("/visible", controllers.GetPromotionsVisible)
 	promotion.Get("/hidden", middlewares.Authenticated(), controllers.GetPromotionsHidden)
 	promotion.Get("/:id", middlewares.Authenticated(), controllers.GetUniquePromotion)
-	promotion.Put("/:id", middlewares.Authenticated(), controllers.EditUniquePromotion)
+	promotion.Patch("/:id", middlewares.Authenticated(), controllers.EditUniquePromotion)
 	promotion.Delete("/:id", middlewares.Authenticated(), controllers.DeleteUniquePromotion)
 }
