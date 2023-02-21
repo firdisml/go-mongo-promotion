@@ -201,7 +201,7 @@ func GetPromotionsHidden(c *fiber.Ctx) error {
 	var filter = bson.M{"visible": false}
 
 	if promotion_search != "" {
-		filter = bson.M{"$and": bson.A{bson.M{"$text": bson.M{"$search": promotion_search}}, bson.M{"visible": true}}}
+		filter = bson.M{"$and": bson.A{bson.M{"$text": bson.M{"$search": promotion_search}}, bson.M{"visible": false}}}
 	}
 
 	find_cursor, find_cursor_error := promotion_collection.Find(ctx, filter, find_options)
