@@ -327,8 +327,6 @@ func EditUniquePromotion(c *fiber.Ctx) error {
 		"shop":     promotion.Shop,
 		"state":    promotion.State,
 		"link":     promotion.Link,
-		"start":    promotion.Start,
-		"end":      promotion.End,
 		"visible":  promotion.Visible,
 	}
 
