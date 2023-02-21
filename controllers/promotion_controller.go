@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/firdisml/go-mongo-rest/configs"
 	"github.com/firdisml/go-mongo-rest/models"
 	"github.com/firdisml/go-mongo-rest/responses"
@@ -263,7 +264,8 @@ func GetUniquePromotion(c *fiber.Ctx) error {
 func EditUniquePromotion(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	promotion_id := c.Params("id")
-	var promotion models.Promotion
+	var promotion models.PromotionUpdate
+	var file_upload_result *s3.PutObjectOutput
 	defer cancel()
 
 	promotion_object_id, object_error := primitive.ObjectIDFromHex(promotion_id)
@@ -288,6 +290,37 @@ func EditUniquePromotion(c *fiber.Ctx) error {
 			Data:    &fiber.Map{"data": validation_error.Error()}})
 	}
 
+	if *promotion.Picture {
+
+		file_header, file_header_error := c.FormFile("image")
+		if file_header_error != nil {
+			return c.Status(http.StatusBadRequest).JSON(responses.PromotionResponse{
+				Status:  http.StatusBadRequest,
+				Message: "Error",
+				Data:    &fiber.Map{"data": file_header_error.Error()}})
+		}
+
+		file, file_error := file_header.Open()
+		if file_error != nil {
+			return c.Status(http.StatusBadRequest).JSON(responses.PromotionResponse{
+				Status:  http.StatusBadRequest,
+				Message: "Error",
+				Data:    &fiber.Map{"data": file_error.Error()}})
+		}
+
+		defer file.Close()
+
+		promotion_id := primitive.NewObjectID()
+
+		file_size := file_header.Size
+
+		file_buffer := make([]byte, file_size)
+
+		file.Read(file_buffer)
+
+		file_upload_result = configs.UploadFile(configs.Storage, file_size, file_buffer, promotion_id)
+	}
+
 	update_promotion := bson.M{
 		"title":    promotion.Title,
 		"category": promotion.Category,
@@ -310,7 +343,7 @@ func EditUniquePromotion(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(responses.PromotionResponse{
 		Status:  http.StatusOK,
 		Message: "Success",
-		Data:    &fiber.Map{"data": update_result}})
+		Data:    &fiber.Map{"data": update_result, "image_data": file_upload_result}})
 }
 
 func DeleteUniquePromotion(c *fiber.Ctx) error {
