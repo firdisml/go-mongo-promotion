@@ -112,10 +112,3 @@ func SignInAdmin(c *fiber.Ctx) error {
 		Message: "Success",
 		Data:    &fiber.Map{"data": admin_stored}})
 }
-
-func GetAdmin(c *fiber.Ctx) error {
-	return c.Status(http.StatusCreated).JSON(responses.AdminResponse{
-		Status:  http.StatusOK,
-		Message: "Success",
-		Data:    &fiber.Map{"token": "gay"}})
-}

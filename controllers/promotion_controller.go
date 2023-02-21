@@ -104,7 +104,7 @@ func CreatePromotion(c *fiber.Ctx) error {
 
 }
 
-func GetPromotions(c *fiber.Ctx) error {
+func GetPromotionsVisible(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	promotions := []models.Promotion{}
 	promotion_skip_string := c.Query("skip")
@@ -134,6 +134,70 @@ func GetPromotions(c *fiber.Ctx) error {
 	find_options.SetSort(bson.M{"created": -1})
 
 	var filter = bson.M{"visible": true}
+
+	if promotion_search != "" {
+		filter = bson.M{"$and": bson.A{bson.M{"$text": bson.M{"$search": promotion_search}}, bson.M{"visible": true}}}
+	}
+
+	find_cursor, find_cursor_error := promotion_collection.Find(ctx, filter, find_options)
+	if find_cursor_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": find_cursor_error.Error()}})
+	}
+
+	find_count, find_count_error := promotion_collection.CountDocuments(ctx, filter)
+	if find_count_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": find_count_error.Error()}})
+	}
+
+	if cursor_error := find_cursor.All(context.TODO(), &promotions); cursor_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": cursor_error.Error()}})
+	}
+
+	return c.Status(http.StatusOK).JSON(responses.PromotionResponse{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    &fiber.Map{"data": promotions, "count": find_count}})
+}
+
+func GetPromotionsHidden(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	promotions := []models.Promotion{}
+	promotion_skip_string := c.Query("skip")
+	promotion_limit_string := c.Query("limit")
+	promotion_search := c.Query("search")
+	defer cancel()
+
+	promotion_skip_int64, promotion_skip_convert_error := strconv.ParseInt(promotion_skip_string, 10, 64)
+	if promotion_skip_convert_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": promotion_skip_convert_error.Error()}})
+	}
+
+	promotion_limit_int64, promotion_limit_convert_error := strconv.ParseInt(promotion_limit_string, 10, 64)
+	if promotion_limit_convert_error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.PromotionResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error",
+			Data:    &fiber.Map{"data": promotion_limit_convert_error.Error()}})
+	}
+
+	find_options := options.Find()
+	find_options.SetSkip(promotion_skip_int64)
+	find_options.SetLimit(promotion_limit_int64)
+	find_options.SetSort(bson.M{"created": -1})
+
+	var filter = bson.M{"visible": false}
 
 	if promotion_search != "" {
 		filter = bson.M{"$and": bson.A{bson.M{"$text": bson.M{"$search": promotion_search}}, bson.M{"visible": true}}}

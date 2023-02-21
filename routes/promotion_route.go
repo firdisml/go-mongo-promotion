@@ -13,7 +13,8 @@ func PromotionRoutes(app *fiber.App) {
 
 	//Routes
 	promotion.Post("/", recaptcha.Middleware, controllers.CreatePromotion)
-	promotion.Get("/query", controllers.GetPromotions)
+	promotion.Get("/visible", controllers.GetPromotionsVisible)
+	promotion.Get("/hidden", middlewares.Authenticated(), controllers.GetPromotionsHidden)
 	promotion.Get("/:id", middlewares.Authenticated(), controllers.GetUniquePromotion)
 	promotion.Put("/:id", middlewares.Authenticated(), controllers.EditUniquePromotion)
 	promotion.Delete("/:id", middlewares.Authenticated(), controllers.DeleteUniquePromotion)
