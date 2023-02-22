@@ -14,8 +14,8 @@ type Promotion struct {
 	State    string             `json:"state,omitempty" validate:"required"`
 	Link     string             `json:"link,omitempty" validate:"required"`
 	Created  time.Time          `json:"created"`
-	Start    time.Time          `json:"start" validate:"required"`
-	End      time.Time          `json:"end" validate:"required"`
+	Start    time.Time          `json:"start,omitempty" validate:"required"`
+	End      time.Time          `json:"end,omitempty" validate:"required"`
 	Visible  *bool              `json:"visible" validate:"required"`
 }
 
@@ -25,8 +25,8 @@ type PromotionUpdate struct {
 	Shop     string    `json:"shop,omitempty" validate:"required"`
 	State    string    `json:"state,omitempty" validate:"required"`
 	Link     string    `json:"link,omitempty" validate:"required"`
-	Start    time.Time `json:"start" validate:"required"`
-	End      time.Time `json:"end" validate:"required"`
+	Start    time.Time `json:"start,omitempty" validate:"required"`
+	End      time.Time `json:"end,omitempty" validate:"required"`
 	Visible  *bool     `json:"visible" validate:"required"`
 	Picture  *bool     `json:"picture" validate:"required"`
 }

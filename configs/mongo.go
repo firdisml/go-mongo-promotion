@@ -41,17 +41,10 @@ func ConnectMongo() *mongo.Client {
 
 	model_promotions_shop := mongo.IndexModel{Keys: bson.M{"shop": "text"}}
 
-	model_promotions_visible := mongo.IndexModel{Keys: bson.M{"visible": -1}}
-
 	model_admins_email := mongo.IndexModel{Keys: bson.M{"email": -1}, Options: options.Index().SetUnique(true)}
 
 	index_promotions_shop, index_promotions_shop_error := coll_promotions.Indexes().CreateOne(ctx, model_promotions_shop)
 	if index_promotions_shop_error != nil {
-		log.Fatal(err)
-	}
-
-	index_promotions_visible, index_promotions_visible_error := coll_promotions.Indexes().CreateOne(ctx, model_promotions_visible)
-	if index_promotions_visible_error != nil {
 		log.Fatal(err)
 	}
 
@@ -61,7 +54,6 @@ func ConnectMongo() *mongo.Client {
 	}
 
 	log.Println("MongoDB Indexed : ", index_promotions_shop)
-	log.Println("MongoDB Indexed : ", index_promotions_visible)
 	log.Println("MongoDB Indexed : ", index_admins_email)
 
 	return client
