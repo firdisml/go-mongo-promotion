@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/firdisml/go-mongo-rest/configs"
 	"github.com/firdisml/go-mongo-rest/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	recaptcha "github.com/jansvabik/fiber-recaptcha"
 )
 
@@ -18,6 +20,12 @@ func main() {
 
 	//Fiber
 	app := fiber.New()
+
+	//Limiter
+	app.Use(limiter.New(limiter.Config{
+		Max:        100,
+		Expiration: 1 * time.Minute,
+	}))
 
 	//Cors
 	app.Use(cors.New(cors.Config{
